@@ -1,0 +1,59 @@
+unit kg = 2.20462 lbs;
+unit lbs = lb;
+unit kg = 1000 g;
+unit m = 100 cm;
+unit m = 1000 mm;
+
+property pi = acos(-1);
+
+assembly materials {
+    assembly lead {
+        //property density = (11.34 g/mm^3) / 1000;
+        property density = (11 g/cm^3) / (1000 mm^3/cm^3);
+    }
+}
+
+assembly reaction_wheel {
+    property shaft_diameter = 5 mm;
+    property shaft_wall = 5 mm;
+    property wheel_wall = 15 mm;
+    property spoke_width = 10 mm;
+    property spoke_height = 5 mm;
+    property wheel_height = 15 mm;
+    //property material = materials.lead;
+
+    parameter wheel_id (10, 1000] mm;
+
+    property shaft_rad = shaft_diameter / 2;
+    property coupling_dia = shaft_diameter + 2 * shaft_wall;
+    property coupling_rad = coupling_dia / 2;
+    property wheel_od = wheel_id + 2 * wheel_wall;
+    property wheel_ir = wheel_id / 2;
+    property wheel_or = wheel_od / 2;
+
+    property inner_angle = 2 * acos(spoke_width / coupling_dia);
+    property outer_angle = 2 * acos(spoke_width / wheel_id);
+
+    property shaft_coupler_vol = wheel_height * pi * (coupling_rad^2 - shaft_rad^2);
+    property wheel_vol = wheel_height * pi * (wheel_or^2 - wheel_ir^2);
+
+    property outer_circle = pi * wheel_ir^2;
+    property inner_circle = pi * coupling_rad^2;
+    property outer_segments = wheel_ir^2 * (outer_angle - sin(outer_angle));
+    property inner_segments = coupling_rad^2 * (inner_angle - sin(inner_angle));
+
+    property spoke_area = (outer_circle - inner_circle + inner_segments - outer_segments) / 2;
+    property spoke_vol = spoke_height * spoke_area;
+
+    property volume = shaft_coupler_vol + wheel_vol + 3*spoke_vol;
+    property wheel_mass = materials.lead.density * wheel_vol;
+    property mass = materials.lead.density * volume;
+
+    summarize wheel_id;
+    summarize wheel_mass;
+    summarize mass;
+}
+
+property target_mass = (2*453.592 g);
+property error = (target_mass - reaction_wheel.mass) / (1 g);
+zero [0.01, 0.0001] error;
