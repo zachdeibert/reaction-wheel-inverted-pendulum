@@ -19,7 +19,7 @@ assembly reaction_wheel {
     property wheel_wall = 15 mm;
     property spoke_width = 10 mm;
     property spoke_height = 5 mm;
-    property wheel_height = 15 mm;
+    property wheel_height = 10 mm;
     //property material = materials.lead;
 
     parameter wheel_id (10, 1000] mm;
@@ -54,6 +54,6 @@ assembly reaction_wheel {
     summarize mass;
 }
 
-property target_mass = (2*453.592 g);
+property target_mass = (1.5*453.592 g);
 property error = (target_mass - reaction_wheel.mass) / (1 g);
 zero [0.01, 0.0001] error;
